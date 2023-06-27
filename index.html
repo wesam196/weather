@@ -37,7 +37,7 @@
 
   try {
       var inpt = document.getElementById("inpt").value;
-      var path = 'http://api.weatherapi.com/v1/current.json?key=5bcabdf1a92b4e5ab3a71200232606&q=city&aqi=yes'.replace("city" ,inpt );
+      var path = 'https://api.weatherapi.com/v1/current.json?key=5bcabdf1a92b4e5ab3a71200232606&q=city&aqi=yes'.replace("city" ,inpt );
       
     const response = await fetch(path);
     const data = await response.json();
