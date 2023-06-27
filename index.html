@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html  dir="rtl">
+<head>
+    
+    <title>weather app</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    
+    <div id="hdr">
+
+            <input type="input" id="inpt" onkeyup="getUsers()"><br/>
+    
+         
+     
+        
+      
+    </div>
+    
+    
+    <div id="groupA" class="non">
+      <p id="name" class="center"></p>
+    
+     <div id="tempreature" class="center"></div>
+    </div>
+    
+    
+    
+    
+    <script>
+    
+        
+   
+        async function getUsers() {
+            
+
+  try {
+      var inpt = document.getElementById("inpt").value;
+      var path = 'http://api.weatherapi.com/v1/current.json?key=5bcabdf1a92b4e5ab3a71200232606&q=city&aqi=yes'.replace("city" ,inpt );
+      
+    const response = await fetch(path);
+    const data = await response.json();
+    console.log(data.country);
+      
+      document.getElementById("name").innerHTML ="درجة الحرارة في: "+ data.location.name + " " + data.current.temp_c;
+      //document.getElementById("tempreature").innerHTML = data.current.temp_c;
+      document.getElementById("groupA").setAttribute("class","block");
+      
+  } catch (error) {
+    console.error(error);
+  }
+            
+
+}
+getUsers();
+
+        
+    </script>
+</body>
+
+</html>
