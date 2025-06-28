@@ -70,7 +70,7 @@
             <div id="description" class="text-capitalize mb-3"></div>
             <div class="d-flex justify-content-center gap-4 small">
                 <div><i class="fas fa-tint"></i> <span id="humidity"></span>%</div>
-                <div><i class="fas fa-wind"></i> <span id="wind"></span> km/h</div>
+                <div ><i class="fas fa-wind"></i> <span id="wind"></span> <span id="wind-unit"> km/h </span></div>
             </div>
         </div>
 
@@ -141,6 +141,8 @@
             document.getElementById('header-title').textContent = selectedLang === 'ar' ? 'الطقس الآن' : 'Weather Now';
             document.getElementById('footer').textContent = selectedLang === 'ar' ? 'مشغل بواسطة' : 'Powered by';
             document.getElementById('title').textContent = selectedLang === 'ar' ? 'الطقس' : 'Weather'
+            document.getElementById('wind-unit').textContent = selectedLang === 'ar' ? 'كم/س' : 'km/h'
+
             const query = document.getElementById('searchInput').value.trim() || 'Mecca';
             fetchWeather(query);
         }
