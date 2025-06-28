@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather</title>
+    <title id="title">Weather</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
 
     <!-- Bootstrap CSS -->
@@ -140,6 +140,7 @@
             document.getElementById('searchInput').placeholder = selectedLang === 'ar' ? 'أدخل المدينة (مثال: مكة)' : 'Enter city (e.g., Mecca)';
             document.getElementById('title').textContent = selectedLang === 'ar' ? 'الطقس الآن' : 'Weather Now';
             document.getElementById('footer').textContent = selectedLang === 'ar' ? 'مشغل بواسطة' : 'Powered by';
+            document.getElementById('title').textContent = selectedLang === 'ar' ? 'الطقس' : 'Weather'
             const query = document.getElementById('searchInput').value.trim() || 'Mecca';
             fetchWeather(query);
         }
