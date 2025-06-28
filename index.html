@@ -52,7 +52,7 @@
             <button class="btn btn-outline-light btn-sm" onclick="switchLang('ar')">العربية</button>
         </div>
 
-        <h1 id="title" class="mb-4">Weather Now</h1>
+        <h1 id="header-title" class="mb-4">Weather Now</h1>
 
         <!-- Search Bar -->
         <form id="searchForm" class="input-group mb-4" style="max-width: 420px; margin: 0 auto;">
@@ -138,7 +138,7 @@
             document.documentElement.lang = selectedLang;
             document.documentElement.dir = selectedLang === 'ar' ? 'rtl' : 'ltr';
             document.getElementById('searchInput').placeholder = selectedLang === 'ar' ? 'أدخل المدينة (مثال: مكة)' : 'Enter city (e.g., Mecca)';
-            document.getElementById('title').textContent = selectedLang === 'ar' ? 'الطقس الآن' : 'Weather Now';
+            document.getElementById('header-title').textContent = selectedLang === 'ar' ? 'الطقس الآن' : 'Weather Now';
             document.getElementById('footer').textContent = selectedLang === 'ar' ? 'مشغل بواسطة' : 'Powered by';
             document.getElementById('title').textContent = selectedLang === 'ar' ? 'الطقس' : 'Weather'
             const query = document.getElementById('searchInput').value.trim() || 'Mecca';
