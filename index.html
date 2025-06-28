@@ -1,62 +1,146 @@
 <!DOCTYPE html>
-<html  dir="rtl">
+<html lang="en" dir="ltr">
 <head>
-    
-    <title>weather app</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-
-<body>
-    
-    <div id="hdr">
-
-            <input type="input" id="inpt" onkeyup="getUsers()"><br/>
-    
-         
-     
-        
-      
-    </div>
-    
-    
-    <div id="groupA" class="non">
-      <p id="name" class="center"></p>
-    
-     <div id="tempreature" class="center"></div>
-    </div>
-    
-    
-    
-    
-    <script>
-    
-        
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dark Weather App</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap JS bundle (Popper included) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
    
-        async function getUsers() {
-            
+   <style>
+        :root {
+            --bg-dark: #121212;
+            --card-dark: #1e1e1e;
+            --text-light: #ffffff;
+            --accent: #0d6efd;
+        }
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .card {
+            background-color: var(--card-dark);
+            border: none;
+            border-radius: 1rem;
+        }
+        .weather-icon {
+            width: 80px;
+            height: 80px;
+        }
+        footer {
+            margin-top: auto;
+            text-align: center;
+            padding: 1rem 0;
+            font-size: 0.875rem;
+            opacity: 0.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container text-center py-5">
+        <div class="d-flex justify-content-end mb-3">
+            <button class="btn btn-outline-light btn-sm me-2" onclick="switchLang('en')">English</button>
+            <button class="btn btn-outline-light btn-sm" onclick="switchLang('ar')">العربية</button>
+        </div>
 
-  try {
-      var inpt = document.getElementById("inpt").value;
-      var path = 'http://api.weatherapi.com/v1/current.json?key=5bcabdf1a92b4e5ab3a71200232606&q=city&aqi=yes'.replace("city" ,inpt );
-      
-    const response = await fetch(path);
-    const data = await response.json();
-    console.log(data.country);
-      
-      document.getElementById("name").innerHTML ="درجة الحرارة في: "+ data.location.name + " " + data.current.temp_c;
-      //document.getElementById("tempreature").innerHTML = data.current.temp_c;
-      document.getElementById("groupA").setAttribute("class","block");
-      
-  } catch (error) {
-    console.error(error);
-  }
-            
+        <h1 id="title" class="mb-4">Weather Now</h1>
 
-}
-getUsers();
+        <!-- Search Bar -->
+        <form id="searchForm" class="input-group mb-4" style="max-width: 420px; margin: 0 auto;">
+            <input type="text" id="searchInput" class="form-control" placeholder="Enter city (e.g., Mecca)" aria-label="City or coordinates">
+            <button class="btn btn-primary" id="searchBtn" type="submit">
+                <i class="fas fa-search"></i>
+            </button>
+        </form>
 
-        
+        <!-- Weather Card -->
+        <div id="weatherCard" class="card mx-auto p-4 text-light" style="max-width: 420px; display: none;">
+            <div id="location" class="h4 mb-2"></div>
+            <img id="weatherIcon" class="weather-icon mb-3" alt="icon" src=""/>
+            <div id="temperature" class="h2 fw-bold"></div>
+            <div id="description" class="text-capitalize mb-3"></div>
+            <div class="d-flex justify-content-center gap-4 small">
+                <div><i class="fas fa-tint"></i> <span id="humidity"></span>%</div>
+                <div><i class="fas fa-wind"></i> <span id="wind"></span> km/h</div>
+            </div>
+        </div>
+
+        <p id="errorMsg" class="text-danger mt-3" style="display:none;"></p>
+    </div>
+
+    <footer  >
+       <div id="footer">  Powered by </div> <a href="http://wesam.42web.io/" target="_blank" class="link-primary">Wesam Salem</a>
+    </footer>
+
+    <script>
+        const apiKey = '5bcabdf1a92b4e5ab3a71200232606';
+        let lang = 'en';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(pos => {
+                    const query = `${pos.coords.latitude},${pos.coords.longitude}`;
+                    fetchWeather(query);
+                }, () => {
+                    fetchWeather('Riyadh'); // Fallback to Riyadh if geolocation fails
+                });
+            } else {
+                fetchWeather('Mecca');
+            }
+        });
+
+        document.getElementById('searchForm').addEventListener('submit', e => {
+            e.preventDefault();
+            const query = document.getElementById('searchInput').value.trim();
+            if (query) fetchWeather(query);
+        });
+
+        function fetchWeather(query) {
+            const url = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${encodeURIComponent(query)}&aqi=yes&lang=${lang}`;
+            fetch(url)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.error) throw new Error(data.error.message);
+                    updateUI(data);
+                })
+                .catch(err => showError(err.message));
+        }
+
+        function updateUI(data) {
+            document.getElementById('errorMsg').style.display = 'none';
+            document.getElementById('weatherCard').style.display = 'block';
+            document.getElementById('location').textContent = `${data.location.name}, ${data.location.country}`;
+            document.getElementById('temperature').textContent = `${Math.round(data.current.temp_c)}°C`;
+            document.getElementById('description').textContent = data.current.condition.text;
+            document.getElementById('humidity').textContent = data.current.humidity;
+            document.getElementById('wind').textContent = data.current.wind_kph;
+            document.getElementById('weatherIcon').src = `https:${data.current.condition.icon}`;
+            document.getElementById('weatherIcon').alt = data.current.condition.text;
+        }
+
+        function showError(msg) {
+            document.getElementById('errorMsg').textContent = msg;
+            document.getElementById('errorMsg').style.display = 'block';
+            document.getElementById('weatherCard').style.display = 'none';
+        }
+
+        function switchLang(selectedLang) {
+            lang = selectedLang;
+            document.documentElement.lang = selectedLang;
+            document.documentElement.dir = selectedLang === 'ar' ? 'rtl' : 'ltr';
+            document.getElementById('searchInput').placeholder = selectedLang === 'ar' ? 'أدخل المدينة (مثال: مكة)' : 'Enter city (e.g., Mecca)';
+            document.getElementById('title').textContent = selectedLang === 'ar' ? 'الطقس الآن' : 'Weather Now';
+            document.getElementById('footer').textContent = selectedLang === 'ar' ? 'مشغل بواسطة' : 'Powered by';
+            const query = document.getElementById('searchInput').value.trim() || 'Mecca';
+            fetchWeather(query);
+        }
     </script>
 </body>
-
 </html>
