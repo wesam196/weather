@@ -157,7 +157,18 @@
             document.getElementById('title').textContent = selectedLang === 'ar' ? 'الطقس' : 'Weather'
             document.getElementById('wind-unit').textContent = selectedLang === 'ar' ? 'كم/س' : 'km/h'
 
-            const query = document.getElementById('searchInput').value.trim() || selectedLang ==='ar'? 'مكة' : 'Riyadh';
+            const query = document.getElementById('searchInput').value.trim() ;
+            if (!query) {
+                if (lang.startsWith('ar')) {
+                    fetchWeather('مكة'); // Default to Mecca
+                } else {
+                    fetchWeather('Riyadh'); // Default to Riyadh
+                }
+                return;
+            }
+
+
+
             fetchWeather(query);
         }
     </script>
