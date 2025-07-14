@@ -99,6 +99,7 @@
     navigator.geolocation.getCurrentPosition(
       pos => {
         const query = `${pos.coords.latitude},${pos.coords.longitude}`;
+        console.log(`Geolocation detected: ${query}`);
         fetchWeather(query);
       },
       () => fetchFallbackWeather(),
