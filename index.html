@@ -97,14 +97,23 @@
     }
 
     navigator.geolocation.getCurrentPosition(
-      pos => {
-        const query = `${pos.coords.latitude},${pos.coords.longitude}`;
-        console.log(`Geolocation detected: ${query}`);
-        fetchWeather(query);
-      },
-      () => fetchFallbackWeather(),
-      { timeout: 10000 }
-    );
+  position => {
+    const lat = position.coords.latitude;
+    const lon = position.coords.longitude;
+    const query = `${lat},${lon}`;
+    console.log(`Geolocation detected: ${query}`);
+    fetchWeather(query);
+  },
+  error => {
+    console.warn(`Geolocation failed: ${error.message}`);
+    fetchFallbackWeather();
+  },
+  {
+    enableHighAccuracy: true,
+    timeout: 10000,
+    maximumAge: 300000  // Use cached position if it's less than 5 minutes old
+  }
+);
   }
 
   function fetchFallbackWeather() {
